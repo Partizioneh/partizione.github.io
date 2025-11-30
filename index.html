@@ -187,6 +187,15 @@
             opacity: 0.9;
         }
 
+        /* wrapper per allineare icone/emojis */
+        .panel-icon-wrapper {
+            width: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
         .main-content {
             flex-grow: 1;
             padding: 2rem;
@@ -609,11 +618,13 @@
         <aside class="left-panel">
             <div class="panel-header" style="justify-content: center;"><i class="fa-solid fa-list"></i></div>
             <div class="panel-item active" data-section="profileBio">
-                <i class="fa-solid fa-user"></i>
+                <span class="panel-icon-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                </span>
                 <span>About myself</span>
             </div>
             <div class="panel-item" data-section="staffExperience">
-                <span>⚒️</span>
+                <span class="panel-icon-wrapper">⚒️</span>
                 <span>Staff Experience</span>
             </div>
         </aside>
