@@ -910,51 +910,83 @@
             initializeProfile();
 
             // CURRENTLY (FruitMC + Discord)
-const bioStaff = [
-    {
-        serverName: "FruitMC",
-        role: "HELPER, SS VERIFIED",
-        color: "#22c55e",
-        imgurLink: "https://imgur.com/a/fruitmc-4avno4m"
-    },
-    {
-        serverName: "[1.8] Tier Test CoralMC",
-        role: "SS VERIFIED",
-        color: "#3b82f6", // BLU
-        imgurLink: "https://imgur.com/a/k3D58xH"
-    },
-    {
-        serverName: "[1.9+] TierList Hub Italiana",
-        role: "SS VERIFIED",
-        color: "#ef4444", // ROSSO
-        imgurLink: "https://imgur.com/a/Cv3HVXJ"
-    }
-];
+            const bioStaff = [
+                {
+                    serverName: "FruitMC",
+                    role: "HELPER, SS VERIFIED",
+                    color: "#22c55e",
+                    imgurLink: "https://imgur.com/a/fruitmc-4avno4m"
+                },
+                {
+                    serverName: "[1.8] Tier Test CoralMC",
+                    role: "SS VERIFIED",
+                    color: "#3b82f6", // blu
+                    imgurLink: "https://imgur.com/a/k3D58xH"
+                },
+                {
+                    serverName: "[1.9+] TierList Hub Italiana",
+                    role: "SS VERIFIED",
+                    color: "#ef4444", // rosso
+                    imgurLink: "https://imgur.com/a/Cv3HVXJ"
+                }
+            ];
 
-const bioGrid = document.querySelector('.bio-staff-section .bio-staff-grid');
-bioGrid.className = 'staff-grid';
+            const bioGrid = document.querySelector('.bio-staff-section .bio-staff-grid');
+            bioGrid.className = 'staff-grid';
 
-bioStaff.forEach(server => {
-    const card = document.createElement('div');
-    card.className = 'server-card';
-    card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+            bioStaff.forEach(server => {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+                card.innerHTML = `<div class="server-info">
+                                    <h4>${server.serverName}</h4>
+                                    <div class="server-role">${server.role}</div>
+                                  </div>`;
+                if (server.color) {
+                    const roleEl = card.querySelector('.server-role');
+                    roleEl.style.background = hexToRgba(server.color, 0.1);
+                    roleEl.style.borderColor = hexToRgba(server.color, 0.2);
+                    roleEl.style.color = server.color;
+                }
+                bioGrid.appendChild(card);
+            });
 
-    card.innerHTML = `
-        <div class="server-info">
-            <h4>${server.serverName}</h4>
-            <div class="server-role">${server.role}</div>
-        </div>
-    `;
+            // Links (Discord, NameMC, guns.lol)
+            createGenericCards('.bio-links-grid', CONFIG.links);
 
-    if (server.color) {
-        const roleEl = card.querySelector('.server-role');
-        roleEl.style.background = hexToRgba(server.color, 0.1);
-        roleEl.style.borderColor = hexToRgba(server.color, 0.2);
-        roleEl.style.color = server.color;
-    }
+            // Staff Experience: Minecraft
+            createCategory('staffExperience', 'Minecraft', '', CONFIG.staffExperience.minecraft);
 
-    bioGrid.appendChild(card);
-});
+            // Staff Experience: Discord
+            createCategory('staffExperience', 'Discord', 'fa-brands fa-discord', CONFIG.staffExperience.discord);
+
+            // Scroll-nav
+            document.querySelectorAll('.panel-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = item.getAttribute('data-section');
+
+                    if (sectionId === 'profileBio') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        const targetSection = document.getElementById(sectionId);
+                        if (targetSection) {
+                            const scrollPosition = targetSection.offsetTop - 40;
+                            window.scrollTo({
+                                top: scrollPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            window.addEventListener('scroll', highlightActiveSection);
+            highlightActiveSection();
+        });
     </script>
 
 </body>
