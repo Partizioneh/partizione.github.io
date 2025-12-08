@@ -187,7 +187,6 @@
             opacity: 0.9;
         }
 
-        /* wrapper per allineare icone/emojis */
         .panel-icon-wrapper {
             width: 18px;
             display: inline-flex;
@@ -734,6 +733,22 @@
                         color: "#22d3ee",
                         imgurLink: "https://imgur.com/a/lunariamc-iwdyvtw"
                     }
+                ],
+                discord: [
+                    {
+                        serverName: "[1.8] Tier Test CoralMC",
+                        role: "SS VERIFIED",
+                        year: "2025",
+                        color: "#3b82f6",
+                        imgurLink: "https://imgur.com/a/k3D58xH"
+                    },
+                    {
+                        serverName: "[1.9+] TierList Hub Italiana",
+                        role: "SS VERIFIED",
+                        year: "2025",
+                        color: "#ef4444",
+                        imgurLink: "https://imgur.com/a/Cv3HVXJ"
+                    }
                 ]
             },
             links: [
@@ -876,7 +891,7 @@
             bgStartAudioH1.style.opacity = '0';
 
             setTimeout(() => {
-                document.body.style.overflowY = 'auto'
+                document.body.style.overflowY = 'auto';
                 appContainer.classList.add('animate-in');
                 muteBtn.classList.add('animate-in');
             }, 100);
@@ -929,6 +944,9 @@
 
             // Staff Experience: Minecraft
             createCategory('staffExperience', 'Minecraft', '', CONFIG.staffExperience.minecraft);
+
+            // Staff Experience: Discord
+            createCategory('staffExperience', 'Discord', 'fa-brands fa-discord', CONFIG.staffExperience.discord);
 
             // Scroll-nav
             document.querySelectorAll('.panel-item').forEach(item => {
