@@ -2,992 +2,883 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partizione</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-        :root {
-            --bg-primary: #000000;
-            --bg-secondary: #0a0a0a;
-            --bg-tertiary: #111111;
-            --bg-card: #0f0f0f;
-            --accent-primary: #0b6470;
-            --accent-secondary: #22d3ee;
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1aa;
-            --text-tertiary: #71717a;
-            --border-primary: #1f1f23;
-            --border-secondary: #27272a;
-            --glow-primary: #22d3ee;
-            --glow-secondary: #0b6470;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-
-        .app-container.animate-in,
-        #mute-btn.animate-in {
-            opacity: 1;
-        }
-
-        .section {
-            transition: transform 1s ease-out, opacity 1s ease-out;
-        }
-
-        #staffExperience {
-            transition-delay: 0.4s;
-        }
-
-        #mute-btn {
-            background: transparent;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10000;
-            color: #fff;
-            border: 3px solid #fff;
-            border-radius: .5rem;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity .5s ease-out, transform 1s ease-out;
-        }
-
-        #bg-start-audio {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100000000;
-            background: #000;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-            transition: opacity 0.2s ease-in-out;
-            cursor: pointer;
-            font-size: 15.2px;
-        }
-
-        #bg-start-audio h1 {
-            transition: opacity 0.05s ease-in-out;
-            opacity: 1;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            overflow-y: hidden;
-            line-height: 1.6;
-            font-size: 14px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            display: flex;
-            width: 100vw;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity .5s ease-out, transform 1s ease-out;
-        }
-
-        .left-panel {
-            width: 280px;
-            background: rgba(15, 15, 15, 0.8);
-            border-right: 1px solid var(--border-primary);
-            padding: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            position: fixed;
-            top: 50%;
-            left: 100px;
-            transform: translateY(-50%);
-            height: auto;
-            max-height: 80vh;
-            overflow-y: auto;
-            z-index: 100;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-primary);
-            transition-delay: 0.2s;
-        }
-
-        .panel-header {
-            padding: 0 1.5rem 1rem 1.5rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .panel-header i {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .panel-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0 8px 8px 0;
-            color: var(--text-secondary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .panel-item:hover {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .panel-item.active {
-            background: var(--accent-primary);
-            color: var(--text-primary);
-            font-weight: 600;
-            border-left: 4px solid var(--accent-secondary);
-            padding-left: calc(1.5rem - 4px);
-            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
-        }
-
-        .panel-item.active:hover {
-            opacity: 0.9;
-        }
-
-        .panel-icon-wrapper {
-            width: 18px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-left: 200px;
-        }
-
-        .section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-primary);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            max-width: 1000px;
-            margin: 0 auto 40px auto;
-            width: 100%;
-            min-height: auto;
-            scroll-margin-top: 20px;
-        }
-
-        .section:last-child {
-            margin-bottom: 0;
-        }
-
-        #profileBio {
-            margin-bottom: 100px !important;
-            transition-delay: 0.3s;
-        }
-
-        #profileName {
-            margin-top: -0.3rem;
-        }
-
-        .section-header {
-            justify-content: center;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .section-icon {
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .profile-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 150px;
-            height: 150px;
-        }
-
-        .profile-border {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0b6470, #22d3ee, #0b6470, #22d3ee);
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            animation: rotate 8s linear infinite;
-        }
-
-        .profile-image {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 60px rgba(34, 211, 238, 0.5);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-        }
-
-        .profile-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-inner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .subtitle {
-            margin-top: 0.25rem;
-            margin-bottom: 0.25rem;
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .bio-tabs {
-            margin-top: 0;
-        }
-
-        .bio-tab {
-            margin-bottom: 0.5rem;
-        }
-
-        .staff-category {
-            margin: 20px auto;
-            max-width: 1000px;
-        }
-
-        .staff-category h3 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            padding-left: 0;
-        }
-
-        .staff-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .server-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-primary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            height: 120px;
-            justify-content: center;
-        }
-
-        .server-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #0b6470, #22d3ee);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .server-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .server-card:hover {
-            border-color: var(--border-secondary);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .server-info h4 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .server-role {
-            background: #10b9811a;
-            color: #10b981;
-            border: 1px solid #10b98133;
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 0.25rem;
-            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .server-year {
-            color: var(--text-tertiary);
-            font-size: 0.8rem;
-            margin-top: 0.1rem;
-            margin-bottom: 0.3rem;
-            line-height: 1;
-        }
-
-        .bio-details {
-            text-align: left;
-            margin-top: 1.5rem;
-            color: var(--text-secondary);
-        }
-
-        .bio-staff-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-            width: 100%;
-        }
-
-        .bio-staff-section {
-            margin-top: 3rem;
-            width: 100%;
-        }
-
-        .bio-links-section {
-            margin-top: 3rem;
-            width: 100%;
-        }
-
-        .bio-links-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .bio-staff-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes textGradient {
-            0% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            background: repeating-linear-gradient(180deg,
-                    #0b6470 0%,
-                    #003944 20%,
-                    #22d3ee 50%,
-                    #003944 80%,
-                    #0b6470 100%);
-            background-size: 100% 300%;
-            background-repeat: repeat-y;
-            animation: backgroundFlow 12s linear infinite;
-            opacity: 0.5;
-        }
-
-        @keyframes backgroundFlow {
-            from { background-position: 0 0; }
-            to { background-position: 0 300%; }
-        }
-
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: transparent;
-            z-index: 1000;
-        }
-
-        .scroll-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            width: 0%;
-            transition: width 0.2s ease;
-        }
-
-        @media (max-width: 1024px) {
-            .left-panel {
-                left: 20px;
-                width: 290px;
-            }
-
-            .main-content {
-                margin-left: 270px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            .left-panel {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-                left: 0;
-                transform: none;
-                max-height: none;
-                margin-bottom: 1rem;
-                border-right: none;
-                border-bottom: 1px solid var(--border-primary);
-                flex-direction: row;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding: 1rem;
-                border-radius: 0;
-            }
-
-            .panel-item {
-                flex: 1 1 auto;
-                max-width: 150px;
-                justify-content: center;
-                border-left: none;
-                border-radius: 8px;
-                padding-left: 1.5rem;
-            }
-
-            .panel-item.active {
-                border-left: none;
-                padding-left: 1.5rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-                margin-left: 0;
-            }
-
-            .section {
-                max-width: 100%;
-                margin: 20px auto;
-                min-height: auto;
-                padding: 1.5rem;
-            }
-
-            .staff-grid {
-                grid-template-columns: repeat(1, minmax(0, 1fr));
-            }
-
-            .panel-header {
-                display: none;
-            }
-
-            .bio-links-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        ::selection {
-            background: var(--accent-primary);
-            color: #ffffff;
-        }
-
-        ::-moz-selection {
-            background: var(--accent-primary);
-            color: #ffffff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partizione</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --bg-tertiary: #111111;
+      --bg-card: #0f0f0f;
+      --accent-primary: #0b6470;
+      --accent-secondary: #22d3ee;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --border-primary: #1f1f23;
+      --border-secondary: #27272a;
+      --glow-primary: #22d3ee;
+      --glow-secondary: #0b6470;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .app-container.animate-in,
+    #mute-btn.animate-in {
+      opacity: 1;
+    }
+
+    .section {
+      transition: transform 1s ease-out, opacity 1s ease-out;
+    }
+
+    #staffExperience {
+      transition-delay: 0.4s;
+    }
+
+    #mute-btn {
+      background: transparent;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10000;
+      color: #fff;
+      border: 3px solid #fff;
+      border-radius: .5rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .5s ease-out, transform 1s ease-out;
+    }
+
+    #bg-start-audio {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100000000;
+      background: #000;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      transition: opacity 0.2s ease-in-out;
+      cursor: pointer;
+      font-size: 15.2px;
+    }
+
+    #bg-start-audio h1 {
+      transition: opacity 0.05s ease-in-out;
+      opacity: 1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      overflow-y: hidden;
+      line-height: 1.6;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity .5s ease-out, transform 1s ease-out;
+    }
+
+    .left-panel {
+      width: 280px;
+      background: rgba(15, 15, 15, 0.8);
+      border-right: 1px solid var(--border-primary);
+      padding: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 50%;
+      left: 100px;
+      transform: translateY(-50%);
+      height: auto;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 100;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-primary);
+      transition-delay: 0.2s;
+    }
+
+    .panel-header {
+      padding: 0 1.5rem 1rem 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .panel-header i {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .panel-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .panel-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .panel-item.active {
+      background: var(--accent-primary);
+      color: var(--text-primary);
+      font-weight: 600;
+      border-left: 4px solid var(--accent-secondary);
+      padding-left: calc(1.5rem - 4px);
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+    }
+
+    .panel-item.active:hover {
+      opacity: 0.9;
+    }
+
+    .panel-icon-wrapper {
+      width: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 200px;
+    }
+
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      max-width: 1000px;
+      margin: 0 auto 40px auto;
+      width: 100%;
+      min-height: auto;
+      scroll-margin-top: 20px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    #profileBio {
+      margin-bottom: 100px !important;
+      transition-delay: 0.3s;
+    }
+
+    #profileName {
+      margin-top: -0.3rem;
+    }
+
+    .section-header {
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-icon {
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .profile-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 150px;
+      height: 150px;
+    }
+
+    .profile-border {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0b6470, #22d3ee, #0b6470, #22d3ee);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      animation: rotate 8s linear infinite;
+    }
+
+    .profile-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 60px rgba(34, 211, 238, 0.5);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+    .profile-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .subtitle {
+      margin-top: 0.25rem;
+      margin-bottom: 0.25rem;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .bio-tabs {
+      margin-top: 0;
+    }
+
+    .bio-tab {
+      margin-bottom: 0.5rem;
+    }
+
+    .staff-category {
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+
+    .staff-category h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      padding-left: 0;
+    }
+
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .server-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      height: 120px;
+      justify-content: center;
+    }
+
+    .server-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #0b6470, #22d3ee);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .server-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .server-card:hover {
+      border-color: var(--border-secondary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .server-info h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .server-role {
+      background: #10b9811a;
+      color: #10b981;
+      border: 1px solid #10b98133;
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .server-year {
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+      margin-top: 0.1rem;
+      margin-bottom: 0.3rem;
+      line-height: 1;
+    }
+
+    .bio-details {
+      text-align: left;
+      margin-top: 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    .bio-staff-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .bio-staff-section {
+      margin-top: 3rem;
+      width: 100%;
+    }
+
+    .bio-links-section {
+      margin-top: 3rem;
+      width: 100%;
+    }
+
+    .bio-links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .bio-staff-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes textGradient {
+      0% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(180deg,
+          #0b6470 0%,
+          #003944 20%,
+          #22d3ee 50%,
+          #003944 80%,
+          #0b6470 100%);
+      background-size: 100% 300%;
+      background-repeat: repeat-y;
+      animation: backgroundFlow 12s linear infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes backgroundFlow {
+      from { background-position: 0 0; }
+      to { background-position: 0 300%; }
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+
+    .scroll-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    @media (max-width: 1024px) {
+      .left-panel { left: 20px; width: 290px; }
+      .main-content { margin-left: 270px; }
+    }
+
+    @media (max-width: 768px) {
+      .app-container { flex-direction: column; }
+      .left-panel {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        max-height: none;
+        margin-bottom: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border-primary);
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+        border-radius: 0;
+      }
+      .panel-item {
+        flex: 1 1 auto;
+        max-width: 150px;
+        justify-content: center;
+        border-left: none;
+        border-radius: 8px;
+        padding-left: 1.5rem;
+      }
+      .panel-item.active {
+        border-left: none;
+        padding-left: 1.5rem;
+      }
+      .main-content { padding: 1rem; margin-left: 0; }
+      .section { max-width: 100%; margin: 20px auto; min-height: auto; padding: 1.5rem; }
+      .staff-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .panel-header { display: none; }
+      .bio-links-grid { grid-template-columns: 1fr; }
+    }
+
+    ::selection { background: var(--accent-primary); color: #ffffff; }
+    ::-moz-selection { background: var(--accent-primary); color: #ffffff; }
+  </style>
 </head>
 
 <body>
-    <div id="bg-start-audio">
-        <h1>Click Anywhere</h1>
-    </div>
+  <div id="bg-start-audio">
+    <h1>Click Anywhere</h1>
+  </div>
 
-    <audio id="bg-music" loop autoplay>
-        <source src="song.mp3" type="audio/mp3">
-        Il tuo browser non supporta l'elemento audio.
-    </audio>
+  <audio id="bg-music" loop autoplay>
+    <source src="song.mp3" type="audio/mp3">
+    Il tuo browser non supporta l'elemento audio.
+  </audio>
 
-    <button id="mute-btn"><i class="fa-solid fa-volume-high"></i></button>
+  <button id="mute-btn"><i class="fa-solid fa-volume-high"></i></button>
 
-    <div class="scroll-progress">
-        <div class="scroll-progress-bar"></div>
-    </div>
+  <div class="scroll-progress">
+    <div class="scroll-progress-bar"></div>
+  </div>
 
-    <div class="app-container">
-        <aside class="left-panel">
-            <div class="panel-header" style="justify-content: center;"><i class="fa-solid fa-list"></i></div>
-            <div class="panel-item active" data-section="profileBio">
-                <span class="panel-icon-wrapper">
-                    <i class="fa-solid fa-user"></i>
-                </span>
-                <span>About myself</span>
-            </div>
-            <div class="panel-item" data-section="staffExperience">
-                <span class="panel-icon-wrapper">⚒️</span>
-                <span>Staff Experience</span>
-            </div>
-        </aside>
+  <div class="app-container">
+    <aside class="left-panel">
+      <div class="panel-header" style="justify-content: center;"><i class="fa-solid fa-list"></i></div>
+      <div class="panel-item active" data-section="profileBio">
+        <span class="panel-icon-wrapper"><i class="fa-solid fa-user"></i></span>
+        <span>About myself</span>
+      </div>
+      <div class="panel-item" data-section="staffExperience">
+        <span class="panel-icon-wrapper">⚒️</span>
+        <span>Staff Experience</span>
+      </div>
+    </aside>
 
-        <div class="main-content">
-            <section class="section" id="profileBio">
-                <div class="section-header">
-                    <div class="section-icon"><i class="fa-solid fa-user"></i></div>
-                    <span>About myself</span>
-                </div>
-                <div class="hero-content">
-                    <div class="profile-wrapper">
-                        <div class="profile-border"></div>
-                        <div class="profile-image">
-                            <div class="profile-inner" id="profileAvatar"></div>
-                        </div>
-                    </div>
-                    <h1 id="profileName" style="
-                        font-size: clamp(2.5rem, 5vw, 4rem);
-                        font-weight: 900;
-                        background: linear-gradient(
-                            90deg,
-                            #0b6470 0%,
-                            #22d3ee 25%,
-                            #0b6470 50%,
-                            #22d3ee 75%,
-                            #0b6470 100%
-                        );
-                        background-size: 200% auto;
-                        background-clip: text;
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                        margin-bottom: 0;
-                        letter-spacing: -0.02em;
-                        animation: textGradient 1.5s linear infinite;
-                        position: relative;
-                        background-position: 0% 50%;
-                    "></h1>
-                    <p class="subtitle" id="profileSubtitle"></p>
-
-                    <div class="bio-tabs">
-                        <div class="bio-tab">
-                            <strong>Age:</strong> 16 y/o
-                        </div>
-                        <div class="bio-tab">
-                            <strong>Place:</strong> Italy
-                        </div>
-                        <div class="bio-tab">
-                            <strong>Occupation:</strong> Student • Staff Minecraft
-                        </div>
-
-                        <!-- CURRENTLY -->
-                        <div class="bio-staff-section">
-                            <h3 class="bio-staff-title"><i class="fa-solid fa-user-clock"></i> CURRENTLY</h3>
-                            <div class="bio-staff-grid"></div>
-                        </div>
-
-                        <!-- LINKS -->
-                        <div class="bio-links-section">
-                            <h3 class="bio-staff-title"><i class="fa-solid fa-link"></i> LINKS</h3>
-                            <div class="bio-links-grid"></div>
-                        </div>
-                    </div>
-
-                    <div class="bio-details" id="bioDetailsContent">
-                    </div>
-                </div>
-            </section>
-
-            <section class="section" id="staffExperience">
-                <div class="section-header">
-                    <div class="section-icon">⚒️</div>
-                    <span>Staff Experience</span>
-                </div>
-            </section>
+    <div class="main-content">
+      <section class="section" id="profileBio">
+        <div class="section-header">
+          <div class="section-icon"><i class="fa-solid fa-user"></i></div>
+          <span>About myself</span>
         </div>
+
+        <div class="hero-content">
+          <div class="profile-wrapper">
+            <div class="profile-border"></div>
+            <div class="profile-image">
+              <div class="profile-inner" id="profileAvatar"></div>
+            </div>
+          </div>
+
+          <h1 id="profileName" style="
+              font-size: clamp(2.5rem, 5vw, 4rem);
+              font-weight: 900;
+              background: linear-gradient(90deg, #0b6470 0%, #22d3ee 25%, #0b6470 50%, #22d3ee 75%, #0b6470 100%);
+              background-size: 200% auto;
+              background-clip: text;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              margin-bottom: 0;
+              letter-spacing: -0.02em;
+              animation: textGradient 1.5s linear infinite;
+              position: relative;
+              background-position: 0% 50%;
+            "></h1>
+
+          <p class="subtitle" id="profileSubtitle"></p>
+
+          <div class="bio-tabs">
+            <div class="bio-tab"><strong>Age:</strong> 16 y/o</div>
+            <div class="bio-tab"><strong>Place:</strong> Italy</div>
+            <div class="bio-tab"><strong>Occupation:</strong> Student • Staff Minecraft</div>
+
+            <div class="bio-staff-section">
+              <h3 class="bio-staff-title"><i class="fa-solid fa-user-clock"></i> CURRENTLY</h3>
+              <div class="bio-staff-grid"></div>
+            </div>
+
+            <div class="bio-links-section">
+              <h3 class="bio-staff-title"><i class="fa-solid fa-link"></i> LINKS</h3>
+              <div class="bio-links-grid"></div>
+            </div>
+          </div>
+
+          <div class="bio-details" id="bioDetailsContent"></div>
+        </div>
+      </section>
+
+      <section class="section" id="staffExperience">
+        <div class="section-header">
+          <div class="section-icon">⚒️</div>
+          <span>Staff Experience</span>
+        </div>
+      </section>
     </div>
+  </div>
 
-    <script>
-        const CONFIG = {
-            profile: {
-                name: "Partizione",
-                avatar: "https://i.imgur.com/NmFw4SG.jpeg",
-                subtitle: "Staff & SS Checker",
-                bioContent: ""
-            },
-            staffExperience: {
-                minecraft: [
-                    {
-                        serverName: "ScarletMC",
-                        role: "MOD, HEAD SS",
-                        year: "July 2025 to September 2025",
-                        color: "#96080f",
-                        imgurLink: "https://imgur.com/a/scarletmc-HO2pQDR"
-                    },
-                    {
-                        serverName: "FruitMC",
-                        role: "HELPER, SS VERIFIED",
-                        year: "October 2025 to now",
-                        color: "#22c55e",
-                        imgurLink: "https://imgur.com/a/fruitmc-4avno4m"
-                    },
-                    {
-                        serverName: "LunariaMC",
-                        role: "STAFFER, SUPPORTER",
-                        year: "January 2025",
-                        color: "#22d3ee",
-                        imgurLink: "https://imgur.com/a/lunariamc-iwdyvtw"
-                    }
-                ],
-                discord: [
-                    {
-                        serverName: "[1.8] Tier Test CoralMC",
-                        role: "SS VERIFIED",
-                        year: "2025",
-                        color: "#3b82f6",
-                        imgurLink: "https://imgur.com/a/k3D58xH"
-                    },
-                    {
-                        serverName: "[1.9+] TierList Hub Italiana",
-                        role: "SS VERIFIED",
-                        year: "2025",
-                        color: "#ef4444",
-                        imgurLink: "https://imgur.com/a/Cv3HVXJ"
-                    }
-                ]
-            },
-            links: [
-                { name: "Discord", role: "@Partizione", icon: "fa-brands fa-discord", color: "#5865F2", link: "https://discord.com/users/Partizione" },
-                { name: "NameMC", role: "Partizione", icon: "fa-solid fa-network-wired", color: "#ffffff", link: "https://it.namemc.com/profile/Partizione" },
-                { name: "guns.lol", role: "Tutti i link", icon: "fa-solid fa-link", color: "#22c55e", link: "https://guns.lol/partizione" }
-            ]
-        };
+  <script>
+    const CONFIG = {
+      profile: {
+        name: "Partizione",
+        avatar: "https://i.imgur.com/NmFw4SG.jpeg",
+        subtitle: "Staff & SS Checker",
+        bioContent: ""
+      },
+      staffExperience: {
+        minecraft: [
+          { serverName: "ScarletMC", role: "MOD, HEAD SS", year: "July 2025 to September 2025", color: "#96080f", imgurLink: "https://imgur.com/a/scarletmc-HO2pQDR" },
+          { serverName: "FruitMC", role: "HELPER, SS VERIFIED", year: "October 2025 to now", color: "#22c55e", imgurLink: "https://imgur.com/a/fruitmc-4avno4m" },
+          { serverName: "LunariaMC", role: "STAFFER, SUPPORTER", year: "January 2025", color: "#22d3ee", imgurLink: "https://imgur.com/a/lunariamc-iwdyvtw" }
+        ],
+        discord: [
+          { serverName: "[1.8] Tier Test CoralMC", role: "SS VERIFIED", year: "2025", color: "#3b82f6", imgurLink: "https://imgur.com/a/k3D58xH" },
+          { serverName: "[1.9+] TierList Hub Italiana", role: "SS VERIFIED", year: "2025", color: "#ef4444", imgurLink: "https://imgur.com/a/Cv3HVXJ" }
+        ]
+      },
+      links: [
+        { name: "Discord", role: "@Partizione", icon: "fa-brands fa-discord", color: "#5865F2", link: "https://discord.com/users/Partizione" },
+        { name: "NameMC", role: "Partizione", icon: "fa-solid fa-network-wired", color: "#ffffff", link: "https://it.namemc.com/profile/Partizione" },
+        { name: "guns.lol", role: "Tutti i link", icon: "fa-solid fa-link", color: "#22c55e", link: "https://guns.lol/partizione" }
+      ]
+    };
 
-        function initializeProfile() {
-            const avatarContainer = document.getElementById('profileAvatar');
-            avatarContainer.innerHTML = `<img src="${CONFIG.profile.avatar}" alt="Profile avatar">`;
-            document.getElementById('profileName').textContent = CONFIG.profile.name;
-            document.getElementById('profileSubtitle').innerHTML =
-                `<i class="fa-solid fa-magnifying-glass" style="transform: scaleX(-1);"></i> ${CONFIG.profile.subtitle}`;
-            document.getElementById('bioDetailsContent').innerHTML = CONFIG.profile.bioContent;
+    function initializeProfile() {
+      const avatarContainer = document.getElementById('profileAvatar');
+      avatarContainer.innerHTML = `<img src="${CONFIG.profile.avatar}" alt="Profile avatar">`;
+      document.getElementById('profileName').textContent = CONFIG.profile.name;
+      document.getElementById('profileSubtitle').innerHTML =
+        `<i class="fa-solid fa-magnifying-glass" style="transform: scaleX(-1);"></i> ${CONFIG.profile.subtitle}`;
+      document.getElementById('bioDetailsContent').innerHTML = CONFIG.profile.bioContent;
+    }
+
+    function hexToRgba(hex, alpha) {
+      let c = hex.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      const bigint = parseInt(c, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function createCategory(targetSectionId, title, icon, servers) {
+      if (!servers || servers.length === 0) return;
+
+      const section = document.getElementById(targetSectionId);
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'staff-category';
+      categoryDiv.innerHTML = `<h3>${icon ? `<i class="${icon}"></i>` : ''} ${title}</h3><div class="staff-grid"></div>`;
+      const grid = categoryDiv.querySelector('.staff-grid');
+
+      servers.forEach(server => {
+        const card = document.createElement('div');
+        card.className = 'server-card';
+        card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+
+        const yearHtml = server.year ? `<div class="server-year">${server.year}</div>` : '';
+
+        card.innerHTML = `
+          <div class="server-info">
+            <h4>${server.serverName}</h4>
+            ${yearHtml}
+            <div class="server-role">${server.role}</div>
+          </div>
+        `;
+
+        if (server.color) {
+          const roleEl = card.querySelector('.server-role');
+          roleEl.style.background = hexToRgba(server.color, 0.1);
+          roleEl.style.borderColor = hexToRgba(server.color, 0.2);
+          roleEl.style.color = server.color;
         }
+        grid.appendChild(card);
+      });
 
-        function hexToRgba(hex, alpha) {
-            let c = hex.replace('#', '');
-            if (c.length === 3) c = c.split('').map(x => x + x).join('');
-            const bigint = parseInt(c, 16);
-            const r = (bigint >> 16) & 255;
-            const g = (bigint >> 8) & 255;
-            const b = bigint & 255;
-            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      section.appendChild(categoryDiv);
+    }
+
+    function createGenericCards(targetElement, items) {
+      const container = document.querySelector(targetElement);
+      container.innerHTML = '';
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'server-card';
+        card.addEventListener('click', () => window.open(item.link, '_blank'));
+        const cardName = item.name || item.role;
+        card.innerHTML = `
+          <div class="server-info">
+            <h4>${item.icon ? `<i class="${item.icon}"></i>&nbsp;` : ''}${cardName}</h4>
+            <div class="server-role">${item.role}</div>
+          </div>
+        `;
+        if (item.color) {
+          const roleEl = card.querySelector('.server-role');
+          roleEl.style.background = hexToRgba(item.color, 0.1);
+          roleEl.style.borderColor = hexToRgba(item.color, 0.2);
+          roleEl.style.color = item.color;
         }
+        container.appendChild(card);
+      });
+    }
 
-        function createCategory(targetSectionId, title, icon, servers) {
-            if (!servers || servers.length === 0) return;
+    function highlightActiveSection() {
+      const sections = document.querySelectorAll('.section');
+      const navItems = document.querySelectorAll('.panel-item');
 
-            const section = document.getElementById(targetSectionId);
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'staff-category';
-            categoryDiv.innerHTML = `<h3>${icon ? `<i class="${icon}"></i>` : ''} ${title}</h3><div class="staff-grid"></div>`;
-            const grid = categoryDiv.querySelector('.staff-grid');
+      const viewportMiddle = window.scrollY + (window.innerHeight / 2);
 
-            servers.forEach(server => {
-                const card = document.createElement('div');
-                card.className = 'server-card';
-                card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+      let closestSection = sections[0];
+      let minDistance = Math.abs(viewportMiddle - (sections[0].offsetTop + sections[0].offsetHeight / 2));
 
-                const yearHtml = server.year ? `<div class="server-year">${server.year}</div>` : '';
-
-                card.innerHTML = `
-                    <div class="server-info">
-                        <h4>${server.serverName}</h4>
-                        ${yearHtml}
-                        <div class="server-role">${server.role}</div>
-                    </div>
-                `;
-
-                if (server.color) {
-                    const roleEl = card.querySelector('.server-role');
-                    roleEl.style.background = hexToRgba(server.color, 0.1);
-                    roleEl.style.borderColor = hexToRgba(server.color, 0.2);
-                    roleEl.style.color = server.color;
-                }
-                grid.appendChild(card);
-            });
-
-            section.appendChild(categoryDiv);
+      sections.forEach(section => {
+        const sectionMiddle = section.offsetTop + (section.offsetHeight / 2);
+        const distance = Math.abs(viewportMiddle - sectionMiddle);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestSection = section;
         }
+      });
 
-        function createGenericCards(targetElement, items) {
-            const container = document.querySelector(targetElement);
-            container.innerHTML = '';
+      const currentSection = closestSection.id;
 
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'server-card';
-                card.addEventListener('click', () => window.open(item.link, '_blank'));
-                const cardName = item.name || item.role;
-                card.innerHTML = `
-                    <div class="server-info">
-                        <h4>${item.icon ? `<i class="${item.icon}"></i>&nbsp;` : ''}${cardName}</h4>
-                        <div class="server-role">${item.role}</div>
-                    </div>
-                `;
-                if (item.color) {
-                    const roleEl = card.querySelector('.server-role');
-                    roleEl.style.background = hexToRgba(item.color, 0.1);
-                    roleEl.style.borderColor = hexToRgba(item.color, 0.2);
-                    roleEl.style.color = item.color;
-                }
-                container.appendChild(card);
-            });
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === currentSection) item.classList.add('active');
+      });
+
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.querySelector('.scroll-progress-bar').style.width = scrolled + '%';
+    }
+
+    const bgMusic = document.getElementById('bg-music');
+    const muteBtn = document.getElementById('mute-btn');
+    const bgStartAudio = document.getElementById('bg-start-audio');
+    const bgStartAudioH1 = bgStartAudio.querySelector('h1');
+    const appContainer = document.querySelector('.app-container');
+
+    bgMusic.volume = 0.075;
+
+    function playBgAudio() {
+      bgStartAudio.style.pointerEvents = 'none';
+      bgStartAudio.style.opacity = '0';
+      bgStartAudioH1.style.opacity = '0';
+
+      setTimeout(() => {
+        document.body.style.overflowY = 'auto';
+        appContainer.classList.add('animate-in');
+        muteBtn.classList.add('animate-in');
+      }, 100);
+
+      bgMusic.play().catch((error) => console.log("Autoplay failed:", error));
+    }
+
+    muteBtn.addEventListener('click', () => {
+      bgMusic.muted = !bgMusic.muted;
+      muteBtn.innerHTML = bgMusic.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+    });
+
+    document.addEventListener('click', playBgAudio, { once: true });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeProfile();
+
+      // CURRENTLY
+      const bioStaff = [
+        { serverName: "FruitMC", role: "HELPER, SS VERIFIED", color: "#22c55e", imgurLink: "https://imgur.com/a/fruitmc-4avno4m" },
+        { serverName: "[1.8] Tier Test CoralMC", role: "SS VERIFIED", color: "#3b82f6", imgurLink: "https://imgur.com/a/k3D58xH" },
+        { serverName: "[1.9+] TierList Hub Italiana", role: "SS VERIFIED", color: "#ef4444", imgurLink: "https://imgur.com/a/Cv3HVXJ" }
+      ];
+
+      const bioGrid = document.querySelector('.bio-staff-section .bio-staff-grid');
+      bioGrid.className = 'staff-grid';
+
+      bioStaff.forEach(server => {
+        const card = document.createElement('div');
+        card.className = 'server-card';
+        card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+        card.innerHTML = `
+          <div class="server-info">
+            <h4>${server.serverName}</h4>
+            <div class="server-role">${server.role}</div>
+          </div>
+        `;
+        if (server.color) {
+          const roleEl = card.querySelector('.server-role');
+          roleEl.style.background = hexToRgba(server.color, 0.1);
+          roleEl.style.borderColor = hexToRgba(server.color, 0.2);
+          roleEl.style.color = server.color;
         }
+        bioGrid.appendChild(card);
+      });
 
-        function highlightActiveSection() {
-            const sections = document.querySelectorAll('.section');
-            const navItems = document.querySelectorAll('.panel-item');
-            let currentSection = 'profileBio';
+      createGenericCards('.bio-links-grid', CONFIG.links);
 
-            const viewportMiddle = window.scrollY + (window.innerHeight / 2);
+      createCategory('staffExperience', 'Minecraft', '', CONFIG.staffExperience.minecraft);
 
-            let closestSection = sections[0];
-            let minDistance = Math.abs(viewportMiddle - (sections[0].offsetTop + sections[0].offsetHeight / 2));
+      /* QUI: Discord SENZA ICONA */
+      createCategory('staffExperience', 'Discord', '', CONFIG.staffExperience.discord);
 
-            sections.forEach(section => {
-                const sectionMiddle = section.offsetTop + (section.offsetHeight / 2);
-                const distance = Math.abs(viewportMiddle - sectionMiddle);
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestSection = section;
-                }
-            });
-
-            currentSection = closestSection.id;
-
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-section') === currentSection) {
-                    item.classList.add('active');
-                }
-            });
-
-            updateProgressBar();
-        }
-
-        function updateProgressBar() {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.querySelector('.scroll-progress-bar').style.width = scrolled + '%';
-        }
-
-        const bgMusic = document.getElementById('bg-music');
-        const muteBtn = document.getElementById('mute-btn');
-        const bgStartAudio = document.getElementById('bg-start-audio');
-        const bgStartAudioH1 = bgStartAudio.querySelector('h1');
-        const appContainer = document.querySelector('.app-container');
-
-        bgMusic.volume = 0.075;
-
-        function playBgAudio() {
-            bgStartAudio.style.pointerEvents = 'none';
-            bgStartAudio.style.opacity = '0';
-            bgStartAudioH1.style.opacity = '0';
-
-            setTimeout(() => {
-                document.body.style.overflowY = 'auto';
-                appContainer.classList.add('animate-in');
-                muteBtn.classList.add('animate-in');
-            }, 100);
-
-            bgMusic.play().catch((error) => {
-                console.log("Autoplay failed:", error);
-            });
-        }
-        muteBtn.addEventListener('click', () => {
-            bgMusic.muted = !bgMusic.muted;
-            muteBtn.innerHTML = bgMusic.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+      document.querySelectorAll('.panel-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = item.getAttribute('data-section');
+          if (sectionId === 'profileBio') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+              window.scrollTo({ top: targetSection.offsetTop - 40, behavior: 'smooth' });
+            }
+          }
         });
-        document.addEventListener('click', playBgAudio, { once: true });
+      });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeProfile();
-
-            // CURRENTLY (FruitMC + Discord)
-            const bioStaff = [
-                {
-                    serverName: "FruitMC",
-                    role: "HELPER, SS VERIFIED",
-                    color: "#22c55e",
-                    imgurLink: "https://imgur.com/a/fruitmc-4avno4m"
-                },
-                {
-                    serverName: "[1.8] Tier Test CoralMC",
-                    role: "SS VERIFIED",
-                    color: "#3b82f6", // blu
-                    imgurLink: "https://imgur.com/a/k3D58xH"
-                },
-                {
-                    serverName: "[1.9+] TierList Hub Italiana",
-                    role: "SS VERIFIED",
-                    color: "#ef4444", // rosso
-                    imgurLink: "https://imgur.com/a/Cv3HVXJ"
-                }
-            ];
-
-            const bioGrid = document.querySelector('.bio-staff-section .bio-staff-grid');
-            bioGrid.className = 'staff-grid';
-
-            bioStaff.forEach(server => {
-                const card = document.createElement('div');
-                card.className = 'server-card';
-                card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
-                card.innerHTML = `<div class="server-info">
-                                    <h4>${server.serverName}</h4>
-                                    <div class="server-role">${server.role}</div>
-                                  </div>`;
-                if (server.color) {
-                    const roleEl = card.querySelector('.server-role');
-                    roleEl.style.background = hexToRgba(server.color, 0.1);
-                    roleEl.style.borderColor = hexToRgba(server.color, 0.2);
-                    roleEl.style.color = server.color;
-                }
-                bioGrid.appendChild(card);
-            });
-
-            // Links (Discord, NameMC, guns.lol)
-            createGenericCards('.bio-links-grid', CONFIG.links);
-
-            // Staff Experience: Minecraft
-            createCategory('staffExperience', 'Minecraft', '', CONFIG.staffExperience.minecraft);
-
-            // Staff Experience: Discord
-            createCategory('staffExperience', 'Discord', 'fa-brands fa-discord', CONFIG.staffExperience.discord);
-
-            // Scroll-nav
-            document.querySelectorAll('.panel-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const sectionId = item.getAttribute('data-section');
-
-                    if (sectionId === 'profileBio') {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
-                    } else {
-                        const targetSection = document.getElementById(sectionId);
-                        if (targetSection) {
-                            const scrollPosition = targetSection.offsetTop - 40;
-                            window.scrollTo({
-                                top: scrollPosition,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
-            });
-
-            window.addEventListener('scroll', highlightActiveSection);
-            highlightActiveSection();
-        });
-    </script>
+      window.addEventListener('scroll', highlightActiveSection);
+      highlightActiveSection();
+    });
+  </script>
 
 </body>
+
 </html>
